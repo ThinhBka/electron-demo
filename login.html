@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <form id="login">
+      <label for="email"> Email </label>
+      <br />
+      <input type="email" name="email" id="email" value="demo@gmail.com" />
+      <br />
+      <label for="password"> Password </label>
+      <br />
+      <input type="password" name="password" id="password" value="demo" />
+      <br/>
+      <input type="checkbox" name="admin" id="admin">You are admin</input>
+      <br />
+      <br />
+      <button type="submit">Login</button>
+    </form>
+    <script>
+      const { ipcRenderer, session } = require("electron");
+      const axios = require("axios");
+      const { store } = require("./keygen");
+      let axiosConfig = {
+        withCredentials: true,
+      };
+      // Check if there's an existing session
+      session.defaultSession.cookies
+        .get({})
+        .then((cookies) => {
+          if(store.get("adminId")){
+            ipcRenderer.send("adminScreen");
+          }else if(store.get("userId")){
+            ipcRenderer.send("userScreen");
+          }
+        })
+        .catch((error) => {});
+
+      // Authenticate user and create a new session
+      const login = document.getElementById("login");
+
+      login.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const admin = document.getElementById("admin").value;
+        if (admin) {
+          axios
+            .post(
+              "/login/admin",
+              {
+                email: email.value,
+                password: password.value,
+              },
+              axiosConfig
+            )
+            .then((res) => {
+              store.set("adminId", res.data.adminId)
+              ipcRenderer.send("adminScreen");
+              history.push(res.data.redirectUrl);
+            })
+            .catch((err) => {
+              return false
+            });
+        } else {
+          axios
+            .post(
+              "/login/user",
+              {
+                email: email.value,
+                password: password.value,
+              },
+              axiosConfig
+            )
+            .then((res) => {
+              store.set("adminId", res.data.userId)
+              ipcRenderer.send("userScreen");
+              history.push(res.data.redirectUrl);
+            })
+            .catch((err) => {
+              return false
+            });
+        }
+      });
+    </script>
+  </body>
+</html>

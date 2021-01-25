@@ -1,0 +1,38 @@
+{
+  "name": "LTNC",
+  "version": "1.0.0",
+  "description": "A minimal Electron application using Keygen for licensing and auto-updates",
+  "main": "main.js",
+  "build": {
+    "appId": "org.keygen.demo",
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "type": "distribution"
+    }
+  },
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "repository": "https://github.com/keygen-sh/example-electron-app",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.6.2",
+    "electron-builder": "^19.33.0"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "electron-store": "^1.3.0",
+    "node-fetch": "^1.7.3",
+    "socket.io-client": "^2.3.0"
+  }
+}

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello world</title>
+    <script>
+      const { app } = require('electron').remote
+      const { store } = require("./keygen")
+
+      const currentUser = JSON.parse(store.get("userId"))
+      const version = app.getVersion()
+    </script>
+  </head>
+  <body>
+   
+    <script>
+      const { ipcRenderer } = require('electron')
+
+      ipcRenderer.on('error', (_, ...args) => console.error(...args))
+      ipcRenderer.on('log', (_, ...args) => console.log(...args))
+
+      
+    </script>
+  </body>
+</html>
