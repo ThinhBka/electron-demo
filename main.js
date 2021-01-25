@@ -1,5 +1,5 @@
 const { app, BrowserWindow, autoUpdater, ipcMain, dialog } = require("electron")
-const { accountId, productId, getLicenses, resetValidatedLicenses } = require("./keygen")
+
 const path = require("path")
 const url = require("url")
 
@@ -25,7 +25,6 @@ function createWindow() {
 
   // Load the login page when user is unauthenticated.
   ipcMain.on("unauthenticated", (event) => {
-    resetValidatedLicenses()
 
     win.loadURL(`file://${__dirname}/login.html`)
   })

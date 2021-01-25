@@ -16,7 +16,9 @@
     <script>
 
       const { ipcRenderer } = require('electron')
-
+      let axiosConfig = {
+        withCredentials: true,
+      };
       ipcRenderer.on('error', (_, ...args) => console.error(...args))
       ipcRenderer.on('log', (_, ...args) => console.log(...args))
       

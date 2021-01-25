@@ -1,25 +1,49 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Hello world</title>
     <script>
-      const { app } = require('electron').remote
-      const { store } = require("./keygen")
+      const { app } = require("electron").remote;
+      const { store } = require("./keygen");
 
-      const currentUser = JSON.parse(store.get("userId"))
-      const version = app.getVersion()
+      const currentUser = JSON.parse(store.get("userId"));
+      const version = app.getVersion();
+      let led = null;
     </script>
   </head>
   <body>
-   
+    <div class="xo-header">Controll Led</div>
+    <div class="xo-controll"></div>
     <script>
-      const { ipcRenderer } = require('electron')
+      const { ipcRenderer } = require("electron");
+      const axios = require("axios");
+      const io = require("socket.io-client");
+      let axiosConfig = {
+        withCredentials: true,
+      };
 
-      ipcRenderer.on('error', (_, ...args) => console.error(...args))
-      ipcRenderer.on('log', (_, ...args) => console.log(...args))
+      const socket = io("http://192.168.1.12:9080/", {
+        withCredentials: true,
+      });
 
-      
+      if (store.get("userId")) {
+        axios.get(`/user/${match.params.id}`, axiosConfig).then((res) => {
+          if (!res.data.success) {
+            ipcRenderer.on("unauthenticated");
+          } else {
+            socket.emit("stateLed", res.data.user[0].dataLed);
+            led = res.data.user[0].dataLed;
+          }
+        });
+      } else {
+        ipcRenderer.on("unauthenticated");
+      }
+
+      socket.on("stateLed", (res) => led = res.data);
+
+      ipcRenderer.on("error", (_, ...args) => console.error(...args));
+      ipcRenderer.on("log", (_, ...args) => console.log(...args));
     </script>
   </body>
 </html>

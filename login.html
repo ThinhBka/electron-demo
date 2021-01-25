@@ -9,11 +9,11 @@
     <form id="login">
       <label for="email"> Email </label>
       <br />
-      <input type="email" name="email" id="email" value="demo@gmail.com" />
+      <input type="text" name="email" id="email" value="" />
       <br />
       <label for="password"> Password </label>
       <br />
-      <input type="password" name="password" id="password" value="demo" />
+      <input type="password" name="password" id="password" value="" />
       <br/>
       <input type="checkbox" name="admin" id="admin">You are admin</input>
       <br />
@@ -28,16 +28,16 @@
         withCredentials: true,
       };
       // Check if there's an existing session
-      session.defaultSession.cookies
-        .get({})
-        .then((cookies) => {
-          if(store.get("adminId")){
-            ipcRenderer.send("adminScreen");
-          }else if(store.get("userId")){
-            ipcRenderer.send("userScreen");
-          }
-        })
-        .catch((error) => {});
+      // session.defaultSession.cookies
+      //   .get({})
+      //   .then((cookies) => {
+      //     if(store.get("adminId")){
+      //       ipcRenderer.send("adminScreen");
+      //     }else if(store.get("userId")){
+      //       ipcRenderer.send("userScreen");
+      //     }
+      //   })
+      //   .catch((error) => {});
 
       // Authenticate user and create a new session
       const login = document.getElementById("login");
@@ -45,16 +45,16 @@
       login.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const email = document.getElementById("email");
-        const password = document.getElementById("password");
-        const admin = document.getElementById("admin").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const admin = document.querySelector('#admin').checked;
         if (admin) {
           axios
             .post(
-              "/login/admin",
+              "http://192.168.1.12:9080/login/admin",
               {
-                email: email.value,
-                password: password.value,
+                email,
+                password,
               },
               axiosConfig
             )
@@ -69,14 +69,15 @@
         } else {
           axios
             .post(
-              "/login/user",
+              "http://localhost:9080/login/user",
               {
-                email: email.value,
-                password: password.value,
+                email,
+                password,
               },
               axiosConfig
             )
             .then((res) => {
+              console.log(res.data);
               store.set("adminId", res.data.userId)
               ipcRenderer.send("userScreen");
               history.push(res.data.redirectUrl);
